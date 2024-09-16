@@ -79,8 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _registerUser(User user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("user", jsonEncode(user));
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginPage()));
+    Navigator.pop(context);
   }
 
   void _onRegisterButtonClicked() {

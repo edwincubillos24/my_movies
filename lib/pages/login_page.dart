@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:my_movies/models/user.dart';
+import 'package:my_movies/pages/home_page.dart';
 import 'package:my_movies/pages/register_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'navigation_bar_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,6 +30,30 @@ class _LoginPageState extends State<LoginPage> {
     user = User.fromJson(userMap);
     print(user.email);
     print(user.password);
+  }
+
+  void _showMessage(String msg) {
+    setState(() {
+      SnackBar snackBar = SnackBar(content: Text(msg));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
+  }
+
+  void _saveSession() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isUserLogged", true);
+  }
+
+  void _onLoginButtonClicked(){
+    if (_email.text == user.email && _password.text == user.password){
+      _saveSession();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context)=> const NavigationBarPage()));
+    } else {
+      _showMessage("Correo electónico o contraseña incorrecta");
+    }
   }
 
   @override
@@ -87,7 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                   height: 16.0,
                 ),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _onLoginButtonClicked();
+                    },
                     child: const Text("Iniciar Sesión"),
                 ),
                 const SizedBox(
