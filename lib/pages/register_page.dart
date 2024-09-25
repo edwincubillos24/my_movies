@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
-import 'login_page.dart';
+import '../repository/firebase_api.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,6 +14,8 @@ class RegisterPage extends StatefulWidget {
 enum Genre { male, female }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final FirebaseApi _firebaseApi = FirebaseApi();
+
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -76,10 +75,25 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  void _registerUser(User user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("user", jsonEncode(user));
-    Navigator.pop(context);
+  void _createUser(User user) async {
+
+    /*   SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("user", jsonEncode(user));*/
+
+    var result = await _firebaseApi.createUser(user.email, user.password);
+
+    if (result == 'invalid-email') {
+      _showMessage('El correo electrónico está mal escrito');
+    } else if (result == 'email-already-in-use') {
+      _showMessage('Ya existe una cuenta con ese correo electrónico');
+    } else if (result == 'weak-password') {
+      _showMessage('La contraseña debe tener mínimo 6 dígitos');
+    } else if (result == 'network-request-failed') {
+      _showMessage('Revise su conexión a internet');
+    } else {
+      _showMessage('Usuario registrado con éxito');
+      Navigator.pop(context);
+    }
   }
 
   void _onRegisterButtonClicked() {
@@ -102,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _isTerrorFavorite,
           _data.toString(),
           _city.text);
-      _registerUser(user);
+      _createUser(user);
 
       /* code */
     }
