@@ -6,6 +6,7 @@ import 'package:my_movies/pages/home_page.dart';
 import 'package:my_movies/pages/register_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../repository/firebase_api.dart';
 import 'navigation_bar_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,17 +21,19 @@ class _LoginPageState extends State<LoginPage> {
   final _email = TextEditingController();
   final _password = TextEditingController();
 
-  User user = User.Empty();
+  final FirebaseApi _firebaseApi = FirebaseApi();
+
+  //User user = User.Empty();
 
   bool _isPasswordObscure = true;
 
-  void _getUser() async{
+ /* void _getUser() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> userMap = jsonDecode(prefs.getString("user")!);
     user = User.fromJson(userMap);
     print(user.email);
     print(user.password);
-  }
+  }*/
 
   void _showMessage(String msg) {
     setState(() {
@@ -44,22 +47,19 @@ class _LoginPageState extends State<LoginPage> {
     prefs.setBool("isUserLogged", true);
   }
 
-  void _onLoginButtonClicked(){
-    if (_email.text == user.email && _password.text == user.password){
-      _saveSession();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context)=> const NavigationBarPage()));
-    } else {
-      _showMessage("Correo electónico o contraseña incorrecta");
-    }
-  }
+  Future<void> _onLoginButtonClicked() async{
+    final result = await _firebaseApi.signInUser(_email.text, _password.text);
 
-  @override
-  void initState() {
-    _getUser();
-    super.initState();
+    if (result == 'invalid-email') {
+      _showMessage('El correo electrónico está mal escrito');
+    }  else if (result == 'network-request-failed') {
+      _showMessage('Revise su conexión a internet');
+    } else if (result == 'invalid-credential') {
+      _showMessage('Correo electronico o contrasena incorrecta');
+    } else {
+      _showMessage('Bienvenido');
+      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const NavigationBarPage()));
+    }
   }
 
   @override
