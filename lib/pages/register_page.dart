@@ -75,13 +75,19 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  void _createUserInDB(User user) async {
+    var result = await _firebaseApi.createUserInDB(user);
+
+    if (result == 'network-request-failed') {
+      _showMessage('Revise su conexión a internet');
+    } else {
+      _showMessage('Usuario creado con éxito');
+      Navigator.pop(context);
+    }
+  }
+
   void _createUser(User user) async {
-
-    /*   SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("user", jsonEncode(user));*/
-
     var result = await _firebaseApi.createUser(user.email, user.password);
-
     if (result == 'invalid-email') {
       _showMessage('El correo electrónico está mal escrito');
     } else if (result == 'email-already-in-use') {
@@ -91,8 +97,8 @@ class _RegisterPageState extends State<RegisterPage> {
     } else if (result == 'network-request-failed') {
       _showMessage('Revise su conexión a internet');
     } else {
-      _showMessage('Usuario registrado con éxito');
-      Navigator.pop(context);
+      user.uid = result!;
+      _createUserInDB(user);
     }
   }
 
@@ -104,6 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       String genre = _genre == Genre.male ? "Masculino" : "Femenino";
       var user = User(
+          "",
           _name.text,
           _email.text,
           _password.text,
