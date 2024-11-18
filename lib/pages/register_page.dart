@@ -98,6 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _showMessage('Revise su conexión a internet');
     } else {
       user.uid = result!;
+
       _createUserInDB(user);
     }
   }

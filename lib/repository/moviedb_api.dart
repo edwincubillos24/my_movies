@@ -15,5 +15,4 @@ class MoviedbApi {
           throw Exception('Falla al cargar las peliculas');
         }
   }
-
 }

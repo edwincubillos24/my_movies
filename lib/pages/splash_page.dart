@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_movies/pages/map_page.dart';
 
 import 'login_page.dart';
 import 'navigation_bar_page.dart';
@@ -27,12 +28,12 @@ class _SplashPageState extends State<SplashPage> {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user == null) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const LoginPage()));
+              MaterialPageRoute(builder: (context) => const MapPage()));
         } else {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => const NavigationBarPage()));
+                  builder: (context) => const MapPage()));
         }
       });
     });

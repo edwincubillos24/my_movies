@@ -9,11 +9,11 @@ String apimoviedbTopRatedResponseToJson(ApimoviedbTopRatedResponse data) => json
 class ApimoviedbTopRatedResponse {
   ApimoviedbTopRatedResponse({
       num? page, 
-      List<Results>? results, 
+      List<Movies>? listMovies,
       num? totalPages, 
       num? totalResults,}){
     _page = page;
-    _results = results;
+    _listMovies = listMovies;
     _totalPages = totalPages;
     _totalResults = totalResults;
 }
@@ -21,37 +21,37 @@ class ApimoviedbTopRatedResponse {
   ApimoviedbTopRatedResponse.fromJson(dynamic json) {
     _page = json['page'];
     if (json['results'] != null) {
-      _results = [];
+      _listMovies = [];
       json['results'].forEach((v) {
-        _results?.add(Results.fromJson(v));
+        _listMovies?.add(Movies.fromJson(v));
       });
     }
     _totalPages = json['total_pages'];
     _totalResults = json['total_results'];
   }
   num? _page;
-  List<Results>? _results;
+  List<Movies>? _listMovies;
   num? _totalPages;
   num? _totalResults;
 ApimoviedbTopRatedResponse copyWith({  num? page,
-  List<Results>? results,
+  List<Movies>? listMovies,
   num? totalPages,
   num? totalResults,
 }) => ApimoviedbTopRatedResponse(  page: page ?? _page,
-  results: results ?? _results,
+  listMovies: listMovies ?? _listMovies,
   totalPages: totalPages ?? _totalPages,
   totalResults: totalResults ?? _totalResults,
 );
   num? get page => _page;
-  List<Results>? get results => _results;
+  List<Movies>? get listMovies => _listMovies;
   num? get totalPages => _totalPages;
   num? get totalResults => _totalResults;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['page'] = _page;
-    if (_results != null) {
-      map['results'] = _results?.map((v) => v.toJson()).toList();
+    if (_listMovies != null) {
+      map['results'] = _listMovies?.map((v) => v.toJson()).toList();
     }
     map['total_pages'] = _totalPages;
     map['total_results'] = _totalResults;
@@ -75,10 +75,10 @@ ApimoviedbTopRatedResponse copyWith({  num? page,
 /// vote_average : 8.707
 /// vote_count : 26996
 
-Results resultsFromJson(String str) => Results.fromJson(json.decode(str));
-String resultsToJson(Results data) => json.encode(data.toJson());
-class Results {
-  Results({
+Movies resultsFromJson(String str) => Movies.fromJson(json.decode(str));
+String resultsToJson(Movies data) => json.encode(data.toJson());
+class Movies {
+  Movies({
       bool? adult, 
       String? backdropPath, 
       List<num>? genreIds, 
@@ -109,7 +109,7 @@ class Results {
     _voteCount = voteCount;
 }
 
-  Results.fromJson(dynamic json) {
+  Movies.fromJson(dynamic json) {
     _adult = json['adult'];
     _backdropPath = json['backdrop_path'];
     _genreIds = json['genre_ids'] != null ? json['genre_ids'].cast<num>() : [];
@@ -139,7 +139,7 @@ class Results {
   bool? _video;
   num? _voteAverage;
   num? _voteCount;
-Results copyWith({  bool? adult,
+Movies copyWith({  bool? adult,
   String? backdropPath,
   List<num>? genreIds,
   num? id,
@@ -153,7 +153,7 @@ Results copyWith({  bool? adult,
   bool? video,
   num? voteAverage,
   num? voteCount,
-}) => Results(  adult: adult ?? _adult,
+}) => Movies(  adult: adult ?? _adult,
   backdropPath: backdropPath ?? _backdropPath,
   genreIds: genreIds ?? _genreIds,
   id: id ?? _id,

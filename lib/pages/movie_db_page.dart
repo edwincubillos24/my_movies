@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_movies/pages/detail_movie_db_page.dart';
 import 'package:my_movies/repository/moviedb_api.dart';
 
 import '../models/apimoviedb_top_rated_response.dart';
@@ -12,19 +13,19 @@ class MovieDbPage extends StatefulWidget {
 
 class _MovieDbPageState extends State<MovieDbPage> {
   final MoviedbApi moviedbApi = MoviedbApi();
-  List<Results> listMovies = <Results>[];
+  List<Movies> listMovies = <Movies>[];
 
   Future<void> _getTopRated() async {
-    var results = await moviedbApi.getTopRated();
+    var remoteResponse = await moviedbApi.getTopRated();
     setState(() {
-      listMovies = results.results!;
+      listMovies = remoteResponse.listMovies!;
     });
   }
 
   @override
   void initState() {
-    _getTopRated();
     super.initState();
+    _getTopRated();
   }
 
   @override
@@ -36,13 +37,16 @@ class _MovieDbPageState extends State<MovieDbPage> {
           child: ListView.builder(
               itemCount: listMovies.length,
               itemBuilder: (BuildContext context, int index) {
-                Results movie = listMovies[index];
+                Movies movie = listMovies[index];
                 return Card(
                   child: ListTile(
                     title: Text(movie.title!),
                     subtitle: Text("Average: ${movie.voteAverage}"),
                     leading: Image.network(
                         "https://image.tmdb.org/t/p/w500/${movie.backdropPath}"),
+                    onTap: () {
+                      Navigator.push( context, MaterialPageRoute(builder: (context) => DetailMovieDbPage(movie)));
+                    },
                   ),
                 );
               }),
